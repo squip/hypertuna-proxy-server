@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Statistics Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        #stats {
+            margin-top: 20px;
+        }
+        .stat-item {
+            margin-bottom: 10px;
+        }
+        .relay-item {
+            background-color: #f9f9f9;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 3px;
+        }
+        .relay-info {
+            margin-top: 10px;
+            padding-left: 20px;
+            border-left: 3px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hypertuna Relay Network</h1>
+        <div id="stats">
+            <div class="stat-item">Active Relays: <span id="active-relays"></span></div>
+            <div class="stat-item">Peers Online: <span id="peers-online"></span></div>
+            <h2>Relay Directory</h2>
+            <div id="relays-list"></div>
+        </div>
+    </div>
+
+    <script>
+        function updateStats() {
+            fetch('network_stats.json')
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('active-relays').textContent = data.active_relays;
+                    document.getElementById('peers-online').textContent = data.peers_online;
+
+                    const relaysList = document.getElementById('relays-list');
+                    relaysList.innerHTML = '';  // Clear existing relay items
+
+                    for (const [relayKey, relayData] of Object.entries(data.relays)) {
+                        const relayItem = document.createElement('div');
+                        relayItem.className = 'relay-item';
+                        let relayHtml = `
+                            <strong>Relay:</strong><br>
+                            <p style="color:DodgerBlue;">wss://hypertuna.com/${relayKey}</p>
+                            Status: ${relayData.status}<br>
+                            Peers: ${relayData.peers}
+                        `;
+
+                        if (relayData.nip11Info) {
+                            relayHtml += `
+                                <div class="relay-info">
+                                    <strong>Relay Profile:</strong><br>
+                                    Name: ${relayData.nip11Info.name || 'N/A'}<br>
+                                    Description: ${relayData.nip11Info.about || 'N/A'}<br>
+                                    Pubkey: ${relayData.nip11Info.pubkey || 'N/A'}<br>
+                                </div>
+                            `;
+                        }
+
+                        relayItem.innerHTML = relayHtml;
+                        relaysList.appendChild(relayItem);
+                    }
+                })
+                .catch(error => console.error('Error fetching network stats:', error));
+        }
+
+        // Update stats immediately and then every 5 seconds
+        updateStats();
+        setInterval(updateStats, 5000);
+    </script>
+</body>
+</html>
