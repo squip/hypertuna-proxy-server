@@ -2,7 +2,8 @@
 a simple proxy server module to coordinate NOSTR websocket request traffic across a swarm of Hypertuna Relay peers
 
 **Note:**
-- This module is an ongoing work-in-progress to be used as part of a larger integrated application, but I'd like to make the current proof-of-concept state available to any NOSTR / Pear builders who may be interested. Feel free to fork, provide feedback / improvements, or use in your project if useful. 
+- This module is an ongoing work-in-progress to be used as part of a larger integrated application, but I'd like to make the current proof-of-concept state available to any NOSTR / Pear builders who may be interested. Feel free to fork, provide feedback / improvements, or use in your project if useful.
+- the Hypertuna Proxy Server is currently optimized for use on a local dedicated network with port-forwarding set-up, or on a VPS with a registered domain / encryption certs. using this proxy server module with a local instance of Hypertuna Relay Server is currently for experimental use.
 
 **Set-Up:**
 1. `git clone https://github.com/squip/hypertuna-proxy-server`
